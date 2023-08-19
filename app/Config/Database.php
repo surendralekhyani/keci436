@@ -36,9 +36,7 @@ class Database extends Config
         'username' => 'root',
         'password' => '',
         'database' => 'ke',
-        // 'username' => 'karanmus_suri',
-        // 'password' => 'LageRahoMunnaBhai*1',
-        // 'database' => 'karanmus_ke',
+        
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
