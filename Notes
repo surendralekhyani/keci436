@@ -1,0 +1,14 @@
+For new Project:-
+- Composer install karne k liye isi folder m word file bana rakhi h steps ki. LEKIN libraries jaise spreadsheet etc ko install karte samay PHP version ka dhyan rakhna chahiye, jaise local server pr php 8 h aur aapne library 8 k hisab se hi update ya install ki h.. aise m server pr php ka version agar 7.4 hua to dikkat ho sakti h.
+
+- Hamesha composer use karo, isse version update aasani se hote h. Codeigniter ki site pr likhe h commands codeigniter ko composer ki help se kaise install karen. PHP 7.4 k liye aur 8 k liye spreadsheet composer se install is command se karo
+        composer require phpoffice/phpspreadsheet "^1.18.0"
+
+- 5 files m kaam karna hota  h mainly .env, config>app.php, config>database.php, config>Filters.php, config>Routes.php
+
+- 'php spark serve' use karne se local server pr to kaam ho jata h lekin cPanel m dikkat aati h. Isliye m root folder pr index.php file banata hu jo Public>index.php ko call kr leti h jisse m xampp ka server on kr k kaam kr leta hu aur cPanel pr b dikkat nahi aati.
+
+    YA FIR
+    youTube pr saved video h mere account m usey dekho (index.php aur .htaccess ko root folder m move aur app.php m configPath ki value change etc.)
+
+- Filters folder m ek new file Auth.php banata (har request pr authorised user check karne k liye) hu jise config k filter.php m register karna hota h

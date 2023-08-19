@@ -1,0 +1,51 @@
+BigR: kamalpan...@g   / M..b..*1
+Domain Name: kamalpanchsheel.in.net
+IP Address: 216.10.252.35
+URL(s): 216.10.252.35/cpanel OR kamalpanchsheel.in.net/cpanel OR http://cp-in-19.bigrock.tempwebhost.net/~kamalnq6/cpanel
+FTP Username: kamalnq6
+FTP Password: M...b...**11
+
+---- recent change
+- PV > HSN 05-Apr-22
+- Customers > Load All by Default 07 apr 2022
+- sale > print css changes (poora bill pahle 2nd page pr aa jata tha zyada item k case m)
+- updated to 4.2.7 from 4.1.9 on 19-oct-22
+- Rate in Item Ledger, Ledger Link in Day Book (17-12-22)
+- itemRemark show in SV and PV detail MODAL. (15-March-2023)
+- Edit Items > hide 0 qty rows (30-Jun-23)
+
+
+----- Codeigniter update notes
+- updated to 4.3.6 from 4.2.7 on 30-Jun-23
+- updated to 4.2.7 from 4.1.9 on 19-oct-22
+- Use following command on terminal and relax
+        composer update 
+- root pr index file ka thoda issue aata h, google pr search maar kr ho jata h..(Actually public folder m index.php ko rakhna hota jise root se call karte h... warna spark se run karo progrom ko jo m nahi chahta...)
+- SV m QR code ka b thoda sa issue aata h path ka bas... 
+
+
+----Notes about big data
+
+- database m INDEXING karo (where wale columns pr)... bahut bahut bahut fark padta h
+- server se pages m data lao (see purchase and sold report)
+- agar server se poora data lana padta h to client pr JS m pages banao warna client pr draw nahi ho pate sare records. (see purchase and sold report 1,70,000 records fetched)
+- 56MB ka dabase jisme lagbhag 40k PV aur SV h... is databse ko server pr import hone m 2 min lage. aur sab smoothly chala server aur client dono pr
+- 86MB ka dabase jisme lagbhag 53k PV aur SV h... is databse ko server pr import hone m 4 min lage. offline to sahi chala lekin server pr memory exhaust ki dikkat aayi lekin fields ko kam karne pr nahi aayi. purchase and sold report m 2,77,000 records la kr dekh liye
+- server pr memory exhaust ki error aati h agar records ko alag array me store karte h, agar usi array m overwrite karte h to nahi aati. ho sake to alag alag arrays ko client pr la kr JS m b merge kr sakte h
+- Indexing karne se Database k size pr NA k barabar fark padta h ji.
+- Query m fields minimum rakho
+- PHP.ini m memory size 512M rakho (Server pr) ye fir php script m ini_set('memory_limit', '-1'); likho
+- kuch fields ko baad m laaya ja sakta h jaise PartyRowid ko pahle le aao aur zarurat padne pr unke naam 2nd AJAX call pr le kr aao.
+- Server pr d(), dd() ya var_dump() use kr k variables ko print kara kr dekh sakte h
+- Agar cust ko itne zyada data ko fetch karna h to Server pr wo plan lo jisme wo zyada memory provide karte ho jaise 4gb
+- Excel m export ka b try kr sakte h lekin memory to tab b chahiyegi. (purchase sold report dekho)
+- 1 record ke size ko number of records se multiply kr k required memory ka pata kr sakte h...
+
+---- LOCK TABLES
+- jb ek hi table pr ek se zyada users k ek sath operation karne ki sambhawna ho to un tables pr write karne se pahle unhe lock kr dena chahiye... jaise ledger table m sale ka data write kr rahe ho usi samay kisi dusre voucher (jaise payment and receipt) se b write op ho sakta h... aise m agar sale banate samay agar tables lock hongi to jb tak sale ka data write nahi ho jata tab tak dusra voucher wait karega.. uske baad apne aap data write ho jayega... eg sale->update module
+Lekin aisa karne se data ko read b nahi kr sakte jb to table unlock nahi ho jati
+
+---QR Code
+- qr code or dynamic image processing k liye php.ini m gd extension ko enable karna hota h ye 2 lines honi chahiye file m warna daal do aur server ko restart karo.. (youtube pr codeigniter 4 list m saved h process)
+        extension=gd
+        extension=gettext

@@ -1,0 +1,12 @@
+///// Write data in txt file
+$folder = 'database/';
+if (!is_dir($folder))
+mkdir($folder, 0777, true);
+chmod($folder, 0777);
+
+$date = date('m-d-Y'); 
+$filename = $folder."db_filename_".$date; 
+
+$handle = fopen($filename.'.sql','w+');
+fwrite($handle,$result);
+fclose($handle);
