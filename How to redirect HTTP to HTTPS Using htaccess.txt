@@ -24,6 +24,7 @@ If you have existing code in your .htaccess, add the following:
 RewriteEngine On
 RewriteCond %{SERVER_PORT} 80
 RewriteRule ^(.*)$ https://www.yourdomain.com/$1 [R,L]
+
 2. Redirect Only a Specific Domain
 For redirecting a specific domain to use HTTPS, add the following:
 
@@ -31,6 +32,7 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^yourdomain\.com [NC]
 RewriteCond %{SERVER_PORT} 80
 RewriteRule ^(.*)$ https://www.yourdomain.com/$1 [R,L]
+
 3. Redirect Only a Specific Folder
 Redirecting to HTTPS on a specific folder, add the following:
 
