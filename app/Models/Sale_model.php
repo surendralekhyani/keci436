@@ -466,5 +466,19 @@ class Sale_model extends Model
                              ->get();
         return($query->getResultArray());
     }
+    
+    public function getPurchaseLog($request)
+    {
+        $builder = $this->db->table('purchasedetail');
+        $query = $builder->select('purchasedetail.purchaseDetailRowId, purchasedetail.purchaseRowId, purchasedetail.itemRowId, purchasedetail.qty, purchasedetail.rate, purchasedetail.amt, purchasedetail.discountPer, purchasedetail.discountAmt, purchasedetail.pretaxAmt, purchasedetail.igst, purchasedetail.igstAmt, purchasedetail.cgst, purchasedetail.cgstAmt, purchasedetail.sgst, purchasedetail.sgstAmt, purchasedetail.netAmt, purchasedetail.sellingPricePer, purchasedetail.sp, purchasedetail.freight, purchasedetail.itemRemarks, items.itemName, customers.customerName, purchase.purchaseDt')
+                             ->where('purchase.deleted', 'N')
+                            ->where('purchasedetail.itemRowId', $request->getPost('itemRowId'))
+                             ->join('purchase','purchase.purchaseRowId = purchasedetail.purchaseRowId')
+                             ->join('items', 'items.itemRowId = purchasedetail.itemRowId')
+                             ->join('customers', 'customers.customerRowId = purchase.customerRowId')
+                             ->orderBy('purchase.purchaseDt, purchaseRowId')
+                             ->get();
+        return($query->getResultArray());
+    }
 
 }

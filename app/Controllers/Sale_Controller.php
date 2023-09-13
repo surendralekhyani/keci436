@@ -482,6 +482,7 @@ class Sale_Controller extends BaseController
 	{
 		$model = new Sale_model();
 		$data['records'] = $model->getSaleLog($this->request);
+		$data['recordsPurchaseLog'] = $model->getPurchaseLog($this->request);
 		echo json_encode($data);
 	}	
 }

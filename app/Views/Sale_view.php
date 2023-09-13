@@ -974,7 +974,8 @@
 			          <button type="button" class="close" data-dismiss="modal">&times;</button>
 			          <h4 class="modal-title" id="h4PurchaseLog">Sale Log (This Party, This Item)</h4>
 			        </div>
-			        <div class="modal-body" style="overflow: auto; height: 300px;">
+			        <div class="modal-body" style="overflow: auto; height: 600px;">
+			        <div style="height: 250px;overflow: auto">
 			          <table id='tblSaleLog' class="table table-stripped">
 			          		<th style='display:none;'>Rowid</th>
 						 	<th>Date</th>
@@ -984,6 +985,27 @@
 						 	<th>Rate</th>
 						 	<th>Amt</th>
 			          </table>
+					</div>
+					  <hr />
+					  <div style="color: blue;">Purchase Log</div>
+					<div style="height: 250px;overflow: auto">
+					  <table id='tblPurchaseLog' class="table table-stripped" style="background:lightgrey;">
+			          		<th style='display:none;'>Rowid</th>
+						 	<th>Date</th>
+						 	<th>Supplier Name</th>
+						 	<th>Item</th>
+						 	<th>Qty</th>
+						 	<th>Rate</th>
+						 	<th style='display:none;'>Amt</th>
+						 	<th>D%</th>
+						 	<th style='display:none;'>DAmt</th>
+						 	<th style='display:none;'>CGST%</th>
+						 	<th style='display:none;'>SGST%</th>
+						 	<th style='display:none;'>Net</th>
+						 	<th>PP</th>
+						 	<th>Fr</th>
+			          </table>
+					</div>
 			        </div>
 			        <div class="modal-footer">
 			        	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -2196,8 +2218,8 @@
 			'dataType': 'json',
 			'success':function(data)
 			{
-				// alert(JSON.stringify(data));
-				setSaleLogTable( data['records'] );
+				// alert(JSON.stringify(data['recordsPurchaseLog']));
+				setSaleLogTable( data['records'], data['recordsPurchaseLog'] );
 
 			},
 			error: function (jqXHR, exception) {
@@ -2206,7 +2228,7 @@
 		});
 	}	
 	
-	function setSaleLogTable(records)
+	function setSaleLogTable(records, recordsPurchaseLog)
 	{
 		$("#tblSaleLog").find("tr:gt(0)").remove(); //// empty first
 		var table = document.getElementById("tblSaleLog");
@@ -2234,5 +2256,51 @@
 			cell.innerHTML = records[i].amt;
 
 		}
+
+		$("#tblPurchaseLog").find("tr:gt(0)").remove(); //// empty first
+			var table = document.getElementById("tblPurchaseLog");
+			for(i=0; i<recordsPurchaseLog.length; i++)
+			{
+				newRowIndex = table.rows.length;
+				row = table.insertRow(newRowIndex);
+
+				var cell = row.insertCell(0);
+				cell.style.display="none";
+				cell.innerHTML = recordsPurchaseLog[i].purchaseRowId;
+				var cell = row.insertCell(1);
+				cell.innerHTML = dateFormat(new Date(recordsPurchaseLog[i].purchaseDt));
+				var cell = row.insertCell(2);
+				cell.innerHTML = recordsPurchaseLog[i].customerName;
+				var cell = row.insertCell(3);
+				cell.innerHTML = recordsPurchaseLog[i].itemName  + " <span style='color: green;'>[" + recordsPurchaseLog[i].itemRemarks + "]</span>";
+				// cell.style.display="none";
+				var cell = row.insertCell(4);
+				cell.innerHTML = recordsPurchaseLog[i].qty;
+				var cell = row.insertCell(5);
+				cell.innerHTML = recordsPurchaseLog[i].rate;
+				var cell = row.insertCell(6);
+				cell.innerHTML = recordsPurchaseLog[i].amt;
+				cell.style.display="none";
+				var cell = row.insertCell(7);
+				cell.innerHTML = recordsPurchaseLog[i].discountPer;
+				var cell = row.insertCell(8);
+				cell.innerHTML = recordsPurchaseLog[i].discountAmt;
+				cell.style.display="none";
+				var cell = row.insertCell(9);
+				cell.innerHTML = recordsPurchaseLog[i].cgst;
+				cell.style.display="none";
+				var cell = row.insertCell(10);
+				cell.innerHTML = recordsPurchaseLog[i].sgst;
+				cell.style.display="none";
+				var cell = row.insertCell(11);
+				cell.innerHTML = recordsPurchaseLog[i].netAmt;
+				cell.style.display="none";
+				var cell = row.insertCell(12);
+				var pp = recordsPurchaseLog[i].netAmt / recordsPurchaseLog[i].qty;
+				cell.innerHTML = pp.toFixed(2);
+				cell.style.color = 'red';
+				var cell = row.insertCell(13);
+				cell.innerHTML = recordsPurchaseLog[i].freight;
+			}
 	}
  </script>
