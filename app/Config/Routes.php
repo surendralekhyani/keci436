@@ -109,6 +109,7 @@ $routes->post('/Sale_Controller/getAllQuotations', 'Sale_Controller::getAllQuota
 $routes->post('/Sale_Controller/getQuotationProducts', 'Sale_Controller::getQuotationProducts', ['filter' => 'auth']);
 $routes->post('/Sale_Controller/getSaleDetial', 'Sale_Controller::getSaleDetial', ['filter' => 'auth']);
 $routes->post('/Sale_Controller/getSaleLog', 'Sale_Controller::getSaleLog', ['filter' => 'auth']);
+$routes->post('/Sale_Controller/getCurrentQtyOfThisItem', 'Sale_Controller::getCurrentQtyOfThisItem', ['filter' => 'auth']);
 
 
 $routes->add('/paymentreceipt', 'PaymentReceipt_Controller::index', ['filter' => 'auth']);

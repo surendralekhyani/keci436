@@ -481,4 +481,64 @@ class Sale_model extends Model
         return($query->getResultArray());
     }
 
+    
+    public function getCurrentQtyOfThisItem($request)
+    {
+        $builder = $this->db->table('items');
+        $query = $builder->select('itemRowId, openingBalance')
+                        ->where('itemRowId', $request->getPost('itemRowId'))
+                        ->orderBy('itemName')
+                        ->get();   
+        $rowsOpening = $query->getResultArray();
+        ////// Purchase Data
+        $builder = $this->db->table('purchasedetail');
+        $query = $builder->selectSum('qty')
+                        ->select('itemRowId')
+                        ->where('itemRowId', $request->getPost('itemRowId'))
+                        ->where('purchase.deleted', 'N')
+                        ->join('purchase','purchase.purchaseRowId = purchasedetail.purchaseRowId')
+                        ->groupBy('itemRowId')
+                        ->get();
+        $rowsPurchase = $query->getResultArray();
+        // return $rowsPurchase;
+
+        ////// Sale Data
+        $builder = $this->db->table('dbdetail');
+        $query = $builder->selectSum('qty')
+                        ->select('itemRowId')
+                        ->where('itemRowId', $request->getPost('itemRowId'))
+                        ->where('db.deleted', 'N')
+                        ->join('db','db.dbRowId = dbdetail.dbRowId')
+                        ->groupBy('itemRowId')
+                        ->get();
+        $rowsSale = $query->getResultArray();
+        // return $rowsSale;
+        $rows = array();
+        foreach($rowsOpening as $row)
+        {
+            // $key=-1;
+            $row["purchaseQty"] = 0;
+            $key = array_search($row['itemRowId'], array_column($rowsPurchase, 'itemRowId'), true);
+            // $row["key"] = $key;
+            
+            if ($key !== false)         
+            {
+                $row["purchaseQty"] = $rowsPurchase[$key]['qty'];
+            }
+
+            $row["saleQty"] = 0;
+            $key = array_search($row['itemRowId'], array_column($rowsSale, 'itemRowId'));
+            if ($key !== false)         
+            {
+                $row["saleQty"] = $rowsSale[$key]['qty'];
+            }
+
+            $row["closingQty"] = $row["openingBalance"] + $row["purchaseQty"] - $row["saleQty"];
+
+
+            $rows[] = $row;         //// adding updated row to array
+        }
+
+        return $rows;
+    }
 }

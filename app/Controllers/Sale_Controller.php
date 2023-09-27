@@ -485,4 +485,12 @@ class Sale_Controller extends BaseController
 		$data['recordsPurchaseLog'] = $model->getPurchaseLog($this->request);
 		echo json_encode($data);
 	}	
+
+	
+	public function getCurrentQtyOfThisItem()
+	{
+		$model = new Sale_model();
+		$data['records'] = $model->getCurrentQtyOfThisItem($this->request);
+		echo json_encode($data);
+	}	
 }

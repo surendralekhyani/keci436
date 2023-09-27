@@ -788,6 +788,9 @@
       	</div>
 	</div>
 
+	<div class="row" style="display: none1;">
+	<label style='color: red;'>Click in Amt column to get Current Qty. at Log btn.</label>
+	</div>
 	<div class="row" style="display: none;">
 		<div class="col-md-12">
 		<?php
@@ -1084,7 +1087,7 @@
 
 		          var cell = row.insertCell(5);
 		          cell.innerHTML = "";
-		          cell.className = "aasda";
+		          cell.className = "clsAmt";
 
 		          var cell = row.insertCell(6);
 		          cell.innerHTML = "0";
@@ -1200,6 +1203,8 @@
 			      $(".clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst").off();
 			      $('.clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst').on('keyup', doRowTotal);
 
+			      $('.clsAmt').off();
+			      $('.clsAmt').on('click', getCurrentQtyOfThisItem);
 
 			      $('.row-remove').on('click', removeRow);
 			      $('.row-pp').on('click', callLastPurchasePrice);
@@ -1410,7 +1415,38 @@
 				calcBalNow();
 			}
 
-			
+			function getCurrentQtyOfThisItem()
+			{
+				// Find the closest row (parent <tr> element)
+				var row = $(this).closest("tr");
+				var rowIndex = $(this).parent().index();
+				var itemRowIdForCurrentQty = parseInt($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text() );	
+				if(itemRowIdForCurrentQty == "" || itemRowIdForCurrentQty == "-1" || isNaN(itemRowIdForCurrentQty) )
+				{
+					// alert("Invalid item...");
+					return;
+				}
+				$.ajax({
+					'url': base_url + '/' + controller + '/getCurrentQtyOfThisItem',
+					'type': 'POST', 
+					'data':{'itemRowId':itemRowIdForCurrentQty},
+					'dataType': 'json',
+					'success':function(data)
+					{
+						// console.log(data['records']);
+						// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(0)").text( data['records'][0].closingQty )
+						
+
+						// Find the button element within the row and change its text
+						row.find(".row-log").text( row.find(".row-log").text() + " ~ " + data['records'][0].closingQty );
+						// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(20)").child().text( data['records'][0].closingQty )
+
+					},
+					error: function (jqXHR, exception) {
+							ajaxCallErrorMsg(jqXHR, exception)
+						}
+				});
+			}
   
 			function bindItem()
 		  	{
