@@ -210,10 +210,14 @@
 						$("#spanPreviousDues").text('');
 						addRow();
 						$("#divPrint").html(data['html']);
-						setTimeout(function() {
-	                        window.print();
-	                    }, 1500);
+						// setTimeout(function() {
+	                    //     window.print();
+	                    // }, 1500);
 
+					},
+					'complete':function(data)
+					{
+						window.print();
 					},
 					error: function (jqXHR, exception) {
 					ajaxCallErrorMsg(jqXHR, exception)
@@ -266,16 +270,14 @@
 						// window.location.href=data;
 						// window.open(data, "_blank");
 						$("#divPrint").html(data['html']);
-						setTimeout(function() {
-								// console.log("FF");
-	                        window.print();
-	                    },1500);
-						
-						// $(document).ready( function () 
-						// {
-						// 	window.print();
-						// });
-
+						// setTimeout(function() {
+						// 		// console.log("FF");
+	                    //     window.print();
+	                    // },1500);
+					},
+					'complete':function(data)
+					{
+						window.print();
 					},
 					error: function (jqXHR, exception) {
 						ajaxCallErrorMsg(jqXHR, exception)
