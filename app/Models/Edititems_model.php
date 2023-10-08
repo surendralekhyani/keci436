@@ -40,7 +40,7 @@ class Edititems_model extends Model
         $builder = $this->db->table($this->table);
         if($request->getPost('searchValue') == "" || strtoupper($request->getPost('searchValue')) == "ALL")
         {
-            $query = $builder->select('items.*, itemgroups.itemGroupName')
+            $query = $builder->select('items.itemRowId, items.itemName, items.sellingPrice, items.pp, items.hsn, items.gstRate, items.openingBalance, itemgroups.itemGroupName')
                                 ->where('items.deleted', 'N')
                                 ->join('itemgroups', 'itemgroups.itemGroupRowId = items.itemGroupRowId')
                                 ->orderBy('items.itemName')
@@ -51,7 +51,7 @@ class Edititems_model extends Model
             $search = $request->getPost('searchValue');  
             $search = explode( ' ', $search );
 
-            $sql = 'Select items.*, itemgroups.itemGroupName from items,itemgroups  where items.itemGroupRowId=itemgroups.itemGroupRowId AND items.deleted="N"';
+            $sql = 'Select items.itemRowId, items.itemName, items.sellingPrice, items.pp, items.hsn, items.gstRate, items.openingBalance, itemgroups.itemGroupName from items,itemgroups  where items.itemGroupRowId=itemgroups.itemGroupRowId AND items.deleted="N"';
             foreach($search as $text)
             {
                     $sql = $sql." AND items.itemName LIKE '%$text%'";

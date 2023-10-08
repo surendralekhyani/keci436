@@ -68,6 +68,7 @@ $routes->post('/EditItems_Controller/saveData', 'EditItems_Controller::saveData'
 $routes->post('/EditItems_Controller/delete', 'EditItems_Controller::delete', ['filter' => 'auth']);
 $routes->post('/EditItems_Controller/undelete', 'EditItems_Controller::undelete', ['filter' => 'auth']);
 $routes->post('/EditItems_Controller/getClosingBalance', 'EditItems_Controller::getClosingBalance', ['filter' => 'auth']);
+$routes->post('/EditItems_Controller/showDataNew', 'EditItems_Controller::showDataNew', ['filter' => 'auth']);
 
 $routes->add('/edititemsgroup', 'EditItemsGroup_Controller::index', ['filter' => 'auth']);
 $routes->post('/EditItemsGroup_Controller/showData', 'EditItemsGroup_Controller::showData', ['filter' => 'auth']);

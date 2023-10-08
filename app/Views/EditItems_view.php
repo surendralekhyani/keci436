@@ -223,7 +223,7 @@
 		function loadDataWithDt()
 		{	
 			var searchValue = $("#txtSearch").val().trim();
-
+			var start = new Date().getTime();
 			$.ajax({
 					'url': base_url + '/' + controller + '/showDataWithDt',
 					'type': 'POST',
@@ -239,8 +239,13 @@
 							// console.log(JSON.stringify(data));
 								setTable(data['records']);
 								setPpHidden();
-								alertPopup('Records loaded... ' + data.timeTook, 4000);
 						}
+					},
+					'complete': function(data)
+					{
+						var end = new Date().getTime();
+						// console.log('The complete time for the AJAX call was ' + (end - start) + ' milliseconds.');
+						alertPopup('Records loaded in... ' + (end - start) + ' milliseconds.', 4000);
 					},
 						error: function (jqXHR, exception) {
 						ajaxCallErrorMsg(jqXHR, exception)
@@ -343,7 +348,7 @@
 						<div class="col-md-2">
 							<?php
 								echo "<label style='color: black; font-weight: normal;'>&nbsp;</label>";
-								echo "<input type='text' id='txtSearch' class='form-control' maxlength=20 placeholder='Search' value='' autocomplete='off'>";
+								echo "<input type='text' id='txtSearch' class='form-control' maxlength=20 placeholder='Search' value='fan 1200' autocomplete='off'>";
 							?>
 						</div>
 						<div class="col-md-2">
@@ -353,12 +358,14 @@
 							?>
 						</div>
 						<div class="col-md-2">
-						<?php
+							<?php
 								echo "<label style='color: black; font-weight: normal;'>&nbsp;	</label>";
 								echo "<input type='button' onclick='loadDataWithDt();' value='Show Data With Dt.' id='btnShowWIthDt' class='btn form-control' style='background-color: lightgray;'>";
 							?>
 						</div>
 						<div class="col-md-3">
+							<label style='color: black; font-weight: normal;'>&nbsp;	</label>
+							<input type='button' onclick='loadDataNew();' value='Show Data With Dt.' id='btnShowWIthDt' class='btn form-control' style='background-color: lightgray;'>
 						</div>
 						<div class="col-md-3">
 							<?php
@@ -651,13 +658,14 @@
 		function storeTblValuesOnlyRowId()
 		{
 			var idString = "";
-			$('#tblItems tr').each(function(row, tr)
+			$('#tblItems tbody tr').each(function(row, tr)
 			{
 				idString += $(tr).find('td:eq(1)').text() + ", "
-				
 			}); 
 			
-			idString = idString.substring(0, idString.length-4);
+			// idString = idString.substring(0, idString.length-4);
+			idString = idString.substring(0, idString.length-2);
+			// console.log(idString)
 			return idString;
 		}
 
@@ -665,7 +673,6 @@
 		{	
 			var TableData;
 			TableData = storeTblValuesOnlyRowId();
-			
 
 			$.ajax({
 					'global': false,
@@ -677,9 +684,8 @@
 							},
 					'success': function(data)
 					{
-						// console.log(data['records']);
 						i=0;
-						$('#tblItems tr:lt(' + data['records'].length +')').each(function(row, tr)
+						$('#tblItems tbody tr:lt(' + (data['records'].length) +')').each(function(row, tr)
 						{
 							var index = data['records'].findIndex(obj => obj.itemRowId === $(tr).find('td:eq(1)').text());
 							closingBal = data['records'][index]['closingQty'];
@@ -699,52 +705,125 @@
 		}
 		function getClosingBalanceInBackground()
 		{	
-			var TableData;
-			TableData = storeTblValuesOnlyRowId();
-			$.ajax({
-					'global': false,
-					'url': base_url + '/' + controller + '/getClosingBalance',
-					'type': 'POST',
-					'dataType': 'json',
-					'data': {
-								'TableData': TableData
-							},
-					'success': function(data)
-					{
-						// console.log(data['records']);
-						x=1
-						tr=0;
-						i=0;
-						rowsInTable = $('#tblItems tr').length;
-						var myInterval = setInterval(function(){
-								if(rowsInTable-1 > tr)
-								{
-									var index = data['records'].findIndex(obj => obj.itemRowId == $('#tblItems tr:eq(' + tr +')').find('td:eq(1)').text());
-									// console.log(index + "---" + $('#tblItems tr:eq(' + tr +')').find('td:eq(1)').text());
-									try
-									{
-										closingBal = data['records'][index]['closingQty'];
-										$('#tblItems tr:eq(' + tr +')').find('td:eq(11)').text(closingBal);
-										$('#tblItems tr:eq(' + tr +')').find('td:eq(11)').css('color', 'red');
-										tr++;
-									}
-									catch(e)
-									{
+			// var TableData;
+			// TableData = storeTblValuesOnlyRowId();
+			// $.ajax({
+			// 		'global': false,
+			// 		'url': base_url + '/' + controller + '/getClosingBalance',
+			// 		'type': 'POST',
+			// 		'dataType': 'json',
+			// 		'data': {
+			// 					'TableData': TableData
+			// 				},
+			// 		'success': function(data)
+			// 		{
+			// 			// console.log(data['records']);
+			// 			x=1
+			// 			tr=0;
+			// 			i=0;
+			// 			rowsInTable = $('#tblItems tr').length;
+			// 			var myInterval = setInterval(function(){
+			// 					if(rowsInTable-1 > tr)
+			// 					{
+			// 						var index = data['records'].findIndex(obj => obj.itemRowId == $('#tblItems tr:eq(' + tr +')').find('td:eq(1)').text());
+			// 						// console.log(index + "---" + $('#tblItems tr:eq(' + tr +')').find('td:eq(1)').text());
+			// 						try
+			// 						{
+			// 							closingBal = data['records'][index]['closingQty'];
+			// 							$('#tblItems tr:eq(' + tr +')').find('td:eq(11)').text(closingBal);
+			// 							$('#tblItems tr:eq(' + tr +')').find('td:eq(11)').css('color', 'red');
+			// 							tr++;
+			// 						}
+			// 						catch(e)
+			// 						{
 
-									}
-								}
-								else{
-									clearInterval(myInterval);
-								}
-							// console.log(data['records']);
-						}, 500);
-						alertPopup('Records loaded... ' + data.timeTook, 4000);
-					},
-						error: function (jqXHR, exception) {
-						ajaxCallErrorMsg(jqXHR, exception)
-				}
-			});
+			// 						}
+			// 					}
+			// 					else{
+			// 						clearInterval(myInterval);
+			// 					}
+			// 				// console.log(data['records']);
+			// 			}, 500);
+			// 			alertPopup('Records loaded... ' + data.timeTook, 4000);
+			// 		},
+			// 			error: function (jqXHR, exception) {
+			// 			ajaxCallErrorMsg(jqXHR, exception)
+			// 	}
+			// });
 			
 		}
 	</script>
+
+	<script>
+		function loadDataNew()
+		{	
+			var searchValue = $("#txtSearch").val().trim();
+			var start = new Date().getTime();
+			$.ajax({
+					'url': base_url + '/' + controller + '/showDataNew',
+					'type': 'POST',
+					'dataType': 'json',
+					'data': {
+								'searchValue': searchValue
+								, 'dtTo': 'dtTo'
+							},
+					'success': function(data)
+					{
+						if(data)
+						{
+							// console.log(JSON.stringify(data));
+							$('#divTable').empty();
+							$('#divTable').html(data.table);
+						}
+					},
+					'complete': function(data)
+					{
+						var end = new Date().getTime();
+						alertPopup('Records loaded in... ' + (end - start) + ' milliseconds.', 4000);
+						// console.log('The complete time for the AJAX call was ' + (end - start) + ' milliseconds.');
+						// console.log($('#tblItems tbody tr').length)
+						myDataTable.destroy();
+						myDataTable=$('#tblItems').DataTable({
+							paging: false,
+							iDisplayLength: -1,
+							aLengthMenu: [[5, 10, 25, -1], [5, 10, 25, "All"]],
+						});
+
+						setPpHidden();
+						///////Following function to add select TD text on FOCUS
+						$("#tblItems tr td").on("focus", function(){
+							// alert($(this).text());
+							var range, selection;
+							if (document.body.createTextRange) {
+								range = document.body.createTextRange();
+								range.moveToElementText(this);
+								range.select();
+							} else if (window.getSelection) {
+								selection = window.getSelection();
+								range = document.createRange();
+								range.selectNodeContents(this);
+								selection.removeAllRanges();
+								selection.addRange(range);
+							}
+						}); 
+
+						$("#tblItems tr td").on("keyup", function(e){
+							// if ( (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122) ) 
+							if(e.keyCode != 9)
+							{
+								var rowIndex = $(this).parent().index();
+								console.log(rowIndex)
+								$("#tblItems tbody").find("tr:eq("+ rowIndex + ")").find("td:eq("+ 4 +")").text(1);
+								rowCount();
+							}
+						});
+					},
+					error: function (jqXHR, exception) {
+						ajaxCallErrorMsg(jqXHR, exception)
+					}
+				});
+
+		}
+	</script>
+
 <?=$this->endSection()?>	
