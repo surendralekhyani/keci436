@@ -147,6 +147,7 @@ $routes->post('/RptLedger_Controller/getSaleDetail', 'RptLedger_Controller::getS
 $routes->post('/RptLedger_Controller/getPurchaseDetail', 'RptLedger_Controller::getPurchaseDetail', ['filter' => 'auth']);
 
 $routes->add('/rptledgeritem', 'RptLedgerItem_Controller::index', ['filter' => 'auth']);
+$routes->add('/rptledgeritem/yeItem/(:any)', 'RptLedgerItem_Controller::yeItem/(:any)', ['filter' => 'auth']);
 $routes->post('/RptLedgerItem_Controller/showData', 'RptLedgerItem_Controller::showData', ['filter' => 'auth']);
 
 

@@ -31,4 +31,17 @@ class RptLedgerItem_Controller extends BaseController
 		echo json_encode($data);
 	}
 
+	public function yeItem($cid='-1')
+	{
+		$model = new Rptledgeritem_model();
+		$MenuRights['mr'] = $this->modelUtil->getUserRights();
+		$data['items'] = $model->getItemList();
+		// $data['itemName'] = $model->getItemName();
+        $data['errMsg'] = "";
+		echo view('header');
+		echo view('menu', $MenuRights);
+        echo view('RptLedgerItem_view', $data);
+		echo view('footer');
+	} 
+
 }

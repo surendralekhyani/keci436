@@ -24,6 +24,14 @@ class Rptledgeritem_model extends Model
         // return $arr;
     }
 
+    public function getItemName($request)
+    {
+      $builder = $this->db->table($this->table);
+      $query = $builder->select('items.itemName')
+                           ->where('itemRowId', $request->getPost('itemRowId'))
+                           ->get();
+      return($query->getResultArray());
+    }
     public function getOpeningBal($request)
     {
          $opBal = 0;

@@ -19,18 +19,18 @@
 
 <script type="text/javascript">
 	$(document).ready( function () {
-	const url2 = window.location.href;
-	// const lastSegment = url2.split("/").pop();
-	var result= url2.split('/');
-	var cn = result[result.length-2];
-	var lastSegment = result[result.length-1];
-	if(lastSegment > 0)
-	{
-		$("#lblCustomerId").text(lastSegment);
-		$("#txtCustomerName").val(cn.replace(/%20/g, " "));
-		$("#btnShow").trigger('click');
-		// console.log(lastSegment); // "playlist"
-	}
+		const url2 = window.location.href;
+		// const lastSegment = url2.split("/").pop();
+		var result= url2.split('/');
+		var cn = result[result.length-2];
+		var lastSegment = result[result.length-1];
+		if(lastSegment > 0)
+		{
+			$("#lblCustomerId").text(lastSegment);
+			$("#txtCustomerName").val(cn.replace(/%20/g, " "));
+			$("#btnShow").trigger('click');
+			// console.log(lastSegment); // "playlist"
+		}
 	});
 	var controller='RptLedger_Controller';
 	var base_url='<?php echo site_url();?>';

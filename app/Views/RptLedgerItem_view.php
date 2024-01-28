@@ -17,6 +17,19 @@
 </style>
 
 <script type="text/javascript">
+	$(document).ready( function () {
+		const url2 = window.location.href;
+		var result= decodeURIComponent(url2);
+		result = result.split('/');
+		var iname = result[result.length-2];
+		var lastSegment = result[result.length-1];
+		if(lastSegment > 0)
+		{
+			$("#lblItemRowId").text(lastSegment);
+			$("#txtItemName").val(iname.replace(/%20/g, " "));
+			$("#btnShow").trigger('click');
+		}
+	});
 
 	var controller='RptLedgerItem_Controller';
 	var base_url='<?php echo site_url();?>';

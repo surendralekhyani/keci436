@@ -28,9 +28,8 @@
 				cell.innerHTML = i+1;
 				cell.style.backgroundColor="#F0F0F0";
 				var cell = row.insertCell(1);
-				cell.innerHTML = records[i].itemRowId;
+				cell.innerHTML = "<a id='contraac' target='_blank' href='<?php  echo base_url();  ?>/index.php/rptledgeritem/yeItem/" + records[i].itemName.replace(/\//g, '~') + "/"+records[i].itemRowId+"'>" + records[i].itemRowId + "</a>";
 				cell.style.backgroundColor="#F0F0F0";
-				// cell.style.display="none";
 				var cell = row.insertCell(2);
 				cell.innerHTML = records[i].itemName;
 				cell.setAttribute("contentEditable", true);
