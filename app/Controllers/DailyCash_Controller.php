@@ -22,6 +22,7 @@ class DailyCash_Controller extends BaseController
 		$data['paymentsSum'] = $model->getPaymentsSum();
 		$data['upiCollection'] = $model->getUpiCollection();
 		$data['deepuSuriBank'] = $model->getDeepuSuriBank();
+		$data['stocksInvested'] = $model->getStocksInvested();
         echo view('DailyCash_view', $data);
 		echo view('footer');
 	}  
@@ -43,6 +44,7 @@ class DailyCash_Controller extends BaseController
 		$data['paymentsSum'] = $model->getPaymentsSum();
 		$data['upiCollection'] = $model->getUpiCollection();
 		$data['deepuSuriBank'] = $model->getDeepuSuriBank();
+		$data['stocksInvested'] = $model->getStocksInvested();
 		echo json_encode($data);
 	}
 

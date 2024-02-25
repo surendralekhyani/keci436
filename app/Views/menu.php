@@ -87,6 +87,7 @@
                   <li><a tabindex="0" class="menu1" style="display:none;" href="<?php  echo base_url();  ?>index.php/complaint">Complaint</a></li>   
                   <li><a tabindex="0" class="menu1" style="display:none;color:red;" href="<?php  echo base_url();  ?>index.php/Recharge">Recharge</a></li>        
                   <li><a tabindex="0" class="menu1" style="display:none;" href="<?php  echo base_url();  ?>/index.php/replacement">Replacement</a></li>          
+                  <li><a tabindex="0" class="menu1" style="display:none;" href="<?php  echo base_url();  ?>/index.php/stocks">Stocks</a></li>          
                 </ul>
               </li>
 

@@ -13,7 +13,7 @@
 		 // alert(JSON.stringify(records));
 		 	var msgWp = "";
 			msgWp += "Respected Customer,";
-			msgWp += "%0aPls clear your dues at *KAMAL COMPUTERS*. This is auto generated msg, ignore if already cleared.";
+			msgWp += "%0aPls clear your dues at *KAMAL COMPUTERS*. This is auto generated msg...";
 			msgWp += "%0a-Regards,";
 			// msgWp += "%0aDilip Lekhyani";
 			// msgWp += "%0a9461070900";

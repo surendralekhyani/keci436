@@ -50,6 +50,7 @@ class Filters extends BaseConfig
 									'Reminders_Controller.*',
 									'Requirement_Controller.*',
 									'Replacement_Controller.*',
+									'Stocks_Controller.*',
 									'RptLedger_Controller.*',
 									'RptDayBook_Controller.*',
 									'RptLedgerItem_Controller.*',

@@ -140,6 +140,18 @@ $routes->post('/Replacement_Controller/setSent', 'Replacement_Controller::setSen
 $routes->post('/Replacement_Controller/setRecd', 'Replacement_Controller::setRecd', ['filter' => 'auth']);
 $routes->post('/Replacement_Controller/loadAllRecords', 'Replacement_Controller::loadAllRecords', ['filter' => 'auth']);
 
+$routes->add('/stocks', 'Stocks_Controller::index', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/showData', 'Stocks_Controller::showData', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/insert', 'Stocks_Controller::insert', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/saveEditedStock', 'Stocks_Controller::saveEditedStock', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/getStockLedger', 'Stocks_Controller::getStockLedger', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/loadAllRecords', 'Stocks_Controller::loadAllRecords', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/loadAllOfThisStock', 'Stocks_Controller::loadAllOfThisStock', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/loadAllStockLedger', 'Stocks_Controller::loadAllStockLedger', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/editCurrentStocks', 'Stocks_Controller::editCurrentStocks', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/saveEditedCurrentStock', 'Stocks_Controller::saveEditedCurrentStock', ['filter' => 'auth']);
+$routes->post('/Stocks_Controller/getProfitOfSattled', 'Stocks_Controller::getProfitOfSattled', ['filter' => 'auth']);
+
 $routes->add('/rptledger', 'RptLedger_Controller::index', ['filter' => 'auth']);
 $routes->add('/rptledger/yeParty/(:any)', 'RptLedger_Controller::yeParty/(:any)', ['filter' => 'auth']);
 $routes->post('/RptLedger_Controller/showData', 'RptLedger_Controller::showData', ['filter' => 'auth']);

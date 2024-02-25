@@ -336,14 +336,13 @@
 	}
 
 </script>
+
 <div class="container-fluid" style="width:95%;">
 	<div class="row">
-		<div class="col-lg-0 col-sm-0 col-md-0 col-xs-0">
-		</div>
-		<div class="col-lg-9 col-sm-9 col-md-9 col-xs-12">
+		<div class="col-md-9 col-xs-12">
 			<h3 class="text-center" style='margin-top:-20px'>Daily Cash</h3>
 				<div class="row" style="margin-top:25px;">
-					<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+					<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 						<?php
 							echo form_input('txtDate', '', "class='form-control' id='txtDate' style='' maxlength=10 autocomplete='off' placeholder='date'");
 			          	?>
@@ -355,38 +354,32 @@
 							$("#txtDate").val(dateFormat(new Date()));
 						</script>	
 			      	</div>
-			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			      	<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 						<?php
 							echo '<input type="number"  step="1" value="0" class="form-control" maxlength="15" id="txtAmt"  placeholder="Amt."/>';
 			          	?>
 			      	</div>
-			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			      	<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 			      		<?php
 							$modes = array();
 							$modes['-1'] = '--- Select ---';
 							$modes['IN'] = "IN";
 							$modes['OUT'] = "OUT";
-							// echo "<label style='color: black; font-weight: normal;'>Mode:</label>";
 							echo form_dropdown('cboMode', $modes, '-1',"class='form-control' id='cboMode'");
 			          	?>      	
 			        </div>
-			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			      	<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 						<?php
-							// echo "<label style='color: black; font-weight: normal;'>UPI Amt. (Deepu 98)</label>";
 							echo form_input('txtUpiAmt', '', "class='form-control' id='txtUpiAmt' style='' maxlength=10 autocomplete='off' placeholder='UPI Amt (Deepu)'");
 						?>
 					</div>
 
-			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
+			      	<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 						<?php
-							// echo "<label style='color: black; font-weight: normal;'>Remarks:</label>";
 							echo form_input('txtRemarks', '', "class='form-control' id='txtRemarks' style='' maxlength=190 autocomplete='on' placeholder='Remarks'");
 			          	?>
 			      	</div>
-			      	<div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
-						<?php
-							// echo "<label style='color: black; font-weight: normal;'>&nbsp;</label>";
-			          	?>
+			      	<div class="col-md-2 col-xs-12" style="margin-top:5px;">
 			          	<button id="btnSave" class="btn btn-primary btn-block" onclick="saveData();">Save</button>
 			      	</div>
 					<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
@@ -395,7 +388,7 @@
 				</div>
 				
 		</div>
-		<div class="col-lg-3 col-sm-3 col-md-3 col-xs-0">
+		<div class="col-md-3 col-xs-12">
 			<label id="lblTotalAmtWithShop" style="color:red;">aa</label><br>
 			<label id="lblDetail" style="color:green;">s</label>
 		</div>
@@ -960,17 +953,18 @@
 		}
 
 		var x = '<?php echo $deepuSuriBank['bal']; ?>';
+		var stocksInvested = '<?php echo $stocksInvested['investedAmt']; ?>';
 		// console.log( x);
-		x = parseInt(x) + parseInt(inHand);
+		x = parseInt(x) + parseInt(inHand) + parseInt(stocksInvested);
 		globalInHandThisDay = x;
 		// console.log(inHand + "  " + x);
 		// $("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC: " + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-		$("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC, inHand, Udhar: " + parseInt(x).toLocaleString('en-IN') );
+		$("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC, inHand, Udhar, Stocks: " + parseInt(x).toLocaleString('en-IN') );
 
 		// udhari = parseInt($("#tblNet tr:eq(2)").find("td:eq(1)").text()) + parseInt($("#tblNet tr:eq(3)").find("td:eq(1)").text());
 		var suri = '<?php echo $deepuSuriBank['suri']; ?>';
 		var deepu = '<?php echo $deepuSuriBank['deepu']; ?>';
-		// console.log(deepu);
+		// console.log(stocksInvested);
 
 		var equitas = '<?php echo $deepuSuriBank['equitas']; ?>';
 		var acc = '<?php echo $deepuSuriBank['acc']; ?>';
@@ -982,7 +976,10 @@
 								", Eqitas: " + parseInt(equitas).toLocaleString('en-IN') + 
 								", ACC: " + parseInt(acc).toLocaleString('en-IN') + 
 								", Udhar: " + parseInt(ps).toLocaleString('en-IN') + 
-								"" + parseInt(ms).toLocaleString('en-IN') );
+								"" + parseInt(ms).toLocaleString('en-IN') +
+								", Stocks: " + parseInt(stocksInvested).toLocaleString('en-IN') +
+								", In Hand: " + parseInt(inHand).toLocaleString('en-IN')
+							);
 		// alert('');
 	}
 </script>

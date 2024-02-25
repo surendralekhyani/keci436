@@ -130,6 +130,17 @@ class Dailycash_model extends Model
         return $detail;
     }
 
+    public function getStocksInvested()
+    {
+        $investor = 'Shop';
+        $query = $this->db->query("
+            SELECT SUM(qty * avgRate) AS sum_buy
+            FROM stockscurrent
+            WHERE investor = '$investor'
+        ")->getRow()->sum_buy;
+        $detail = array("investedAmt" => $query);
+        return $detail;
+    }
 
     public function getDataLimit()
     {
