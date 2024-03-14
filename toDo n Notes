@@ -1,15 +1,5 @@
 
 
----- recent change
-- PV > HSN 05-Apr-22
-- Customers > Load All by Default 07 apr 2022
-- sale > print css changes (poora bill pahle 2nd page pr aa jata tha zyada item k case m)
-- updated to 4.2.7 from 4.1.9 on 19-oct-22
-- Rate in Item Ledger, Ledger Link in Day Book (17-12-22)
-- itemRemark show in SV and PV detail MODAL. (15-March-2023)
-- Edit Items > hide 0 qty rows (30-Jun-23)
-
-
 ----- Codeigniter update notes
 - updated to 4.3.6 from 4.2.7 on 30-Jun-23
 - updated to 4.2.7 from 4.1.9 on 19-oct-22

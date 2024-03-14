@@ -27,18 +27,21 @@
 
 
 	var tblRowsCount=0;
+	var isRowsIdMinusOne=0;
 	function storeTblValuesItems()
 	{
+		isRowsIdMinusOne=0;
 	    var TableData = new Array();
 	    var i=0;
 	    $('#tbl1 tr').each(function(row, tr)
 	    {
-	    	// alert($(tr).find('td:eq(3)').text().length);
 	    	if( $(tr).find('td:eq(3)').text().length > 0 )
 	    	{
+				if( $(tr).find('td:eq(1)').text() == "-1" || $(tr).find('td:eq(1)').text() == "") /// agar ITEM GALAT hai.
+				{
+					isRowsIdMinusOne = 1;
+				}
 	    		str = $(tr).find("td:eq(18)").text();
-	    		// alert(str);
-				// pp= str.substring(str.indexOf("K")+1, str.length)
 				if( str.substring(str.indexOf("K")+1, str.length) == "0" || str == "") /// agar pp nahi h ya zero h.
 				{
 					pp = parseFloat( $(tr).find("td:eq(5)").text() );
@@ -47,8 +50,6 @@
 				{
 					pp = str.substring(str.indexOf("K")+1, str.length);
 				}
-				// alert(pp);
-				// return;
 	        	TableData[i]=
 	        	{
 		            "itemRowId" : $(tr).find('td:eq(1)').text()
@@ -79,17 +80,20 @@
 	
 	function saveData()
 	{	
-		// alert(serviceChargeFlag);
+		
 		var TableDataItems;
 		TableDataItems = storeTblValuesItems();
 		TableDataItems = JSON.stringify(TableDataItems);
 		// alert(JSON.stringify(TableDataItems));
 		// return;
-		// alert(tblRowsCount);
 		if(tblRowsCount == 0)
 		{
 			alertPopup("Zero items to save", 5000, 'red');
-			// $("#txtDate").focus();
+			return;
+		}
+		if(isRowsIdMinusOne == 1)
+		{
+			alert("Invalid item... See -1 itemRowId");
 			return;
 		}
 
@@ -201,6 +205,16 @@
 							},
 					'success': function(data)
 					{
+						if(data == "Khali")
+						{
+							alert("Invalid Customer");
+							return;
+						}
+						if(data == "ITEMGALAT")
+						{
+							alert("Invalid Item... See -1 item...");
+							return;
+						}
 						blankControls();	
 						setTablePuraneDb(data['records'])
 						$("#txtDate").val(dateFormat(new Date()));
@@ -669,7 +683,12 @@
 	           <tr class="sticky-row" >
 	            <th class="sticky-cell" width="20">S.N.</th>
 	            <th width="50" style='display:none1;'>Item Row Id</th>
-	            <th width="200">Item</th>
+	            <th width="200"><div style="float:left;">Item</div> 
+					<div style="float:right;">
+						<a target="blank" href="<?php  echo base_url();  ?>/index.php/items"><span style="" class="glyphicon">+</span></a>&nbsp;&nbsp;&nbsp;
+						<a href="#"> <span onclick="reloadItems();" class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+					</div>
+				</th>
 	            <th width="50">Qty</th>
 	            <th width="50">Rate</th>
 	            <th width="50">Amt</th>
@@ -1028,9 +1047,6 @@
 			    </div>
 			</div>			  
 <script type="text/javascript">
-	
-          	
-
 	$(document).ready( function () {
 		$( "#txtDate" ).datepicker({
 			dateFormat: "dd-M-yy",changeMonth: true,changeYear: true,yearRange: "2010:2050"
@@ -1043,7 +1059,10 @@
 		});
 
 		  $("#tbl1").find("tr:gt(0)").remove();
-		  addRow();
+
+
+		globalJSonArrayOfItems = '<?php echo json_encode($items); ?>';
+		addRow();
 
 		  $("#txtCustomerName").focus();
 
@@ -1056,510 +1075,492 @@
 	}
 
 
-	      $("button.table-add").on("click",addRow);
-	      	var sn=1;
-			function addRow()
+	$("button.table-add").on("click",addRow);
+	var sn=1;
+	function addRow()
+	{
+			var table = document.getElementById("tbl1");
+			newRowIndex = table.rows.length;
+			row = table.insertRow(newRowIndex);
+
+			var cell = row.insertCell(0);
+			cell.innerHTML = parseInt(sn++) ;
+			cell.style.backgroundColor="#F0F0F0";
+			cell.className = " sticky-cell";
+			var cell = row.insertCell(1);
+			cell.innerHTML = "";
+			cell.style.display="none1";
+
+			$('.clsItem').unbind('blur');
+			var cell = row.insertCell(2);
+			cell.innerHTML = "";
+			cell.contentEditable="true";
+			cell.className = "clsItem";
+			var cell = row.insertCell(3);
+			cell.innerHTML = "1";
+			cell.contentEditable="true";
+			cell.className = "clsQty";
+
+			var cell = row.insertCell(4);
+			cell.innerHTML = "";
+			cell.contentEditable="true";
+			cell.className = "clsRate";
+
+			var cell = row.insertCell(5);
+			cell.innerHTML = "";
+			cell.className = "clsAmt";
+
+			var cell = row.insertCell(6);
+			cell.innerHTML = "0";
+			// cell.contentEditable="true";
+			cell.className = "clsDiscountPer";
+			cell.style.display="none";
+
+			var cell = row.insertCell(7);
+			cell.innerHTML = "0";
+			cell.className = "clsDiscountAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(8);
+			cell.innerHTML = "0";
+			cell.className = "clsPreTaxAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(9);
+			cell.innerHTML = "0";
+			// cell.contentEditable="true";
+			cell.className = "clsIgst";
+			cell.style.display="none";
+
+			var cell = row.insertCell(10);
+			cell.innerHTML = "0";
+			cell.className = "clsIgstAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(11);
+			cell.innerHTML = "0";
+			// cell.contentEditable="true";
+			cell.className = "clsCgst";
+			cell.style.display="none";
+
+			var cell = row.insertCell(12);
+			cell.innerHTML = "0";
+			cell.className = "clsCgstAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(13);
+			cell.innerHTML = "0";
+			// cell.contentEditable="true";
+			cell.className = "clsSgst";
+			cell.style.display="none";
+
+			var cell = row.insertCell(14);
+			cell.innerHTML = "0";
+			cell.className = "clsSgstAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(15);
+			cell.innerHTML = "0";
+			cell.className = "clsNetAmt";
+			cell.style.display="none";
+
+			var cell = row.insertCell(16);
+			cell.innerHTML = "";
+			cell.className = "clsRemarks";
+			cell.contentEditable="true";
+
+			var cell = row.insertCell(17);
+			cell.innerHTML = "<button class='row-add' style='color:lightgray;' onclick='addRow();'> <span class='glyphicon glyphicon-plus'> </span></button>";
+			cell.style.textAlign="center";
+
+			var cell = row.insertCell(18);
+			cell.innerHTML = "<button class='row-remove' style='color:lightgray;'> <span class='glyphicon glyphicon-remove'> </span></button>";
+			cell.style.textAlign="center";
+			// cell.textAlign="center";
+			if(sn == 2) ///remove row not required in first row
 			{
-				  var table = document.getElementById("tbl1");
-		          newRowIndex = table.rows.length;
-		          row = table.insertRow(newRowIndex);
-
-		          var cell = row.insertCell(0);
-		          cell.innerHTML = parseInt(sn++) ;
-		          cell.style.backgroundColor="#F0F0F0";
-		          cell.className = " sticky-cell";
-		          var cell = row.insertCell(1);
-		          cell.innerHTML = "";
-		          cell.style.display="none1";
-
-				  $('.clsItem').unbind('blur');
-		          var cell = row.insertCell(2);
-		          cell.innerHTML = "";
-		          cell.contentEditable="true";
-		          cell.className = "clsItem";
-		          var cell = row.insertCell(3);
-		          cell.innerHTML = "1";
-		          cell.contentEditable="true";
-		          cell.className = "clsQty";
-
-		          var cell = row.insertCell(4);
-		          cell.innerHTML = "";
-		          cell.contentEditable="true";
-		          cell.className = "clsRate";
-
-		          var cell = row.insertCell(5);
-		          cell.innerHTML = "";
-		          cell.className = "clsAmt";
-
-		          var cell = row.insertCell(6);
-		          cell.innerHTML = "0";
-		          // cell.contentEditable="true";
-		          cell.className = "clsDiscountPer";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(7);
-		          cell.innerHTML = "0";
-		          cell.className = "clsDiscountAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(8);
-		          cell.innerHTML = "0";
-		          cell.className = "clsPreTaxAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(9);
-		          cell.innerHTML = "0";
-		          // cell.contentEditable="true";
-		          cell.className = "clsIgst";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(10);
-		          cell.innerHTML = "0";
-		          cell.className = "clsIgstAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(11);
-		          cell.innerHTML = "0";
-		          // cell.contentEditable="true";
-		          cell.className = "clsCgst";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(12);
-		          cell.innerHTML = "0";
-		          cell.className = "clsCgstAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(13);
-		          cell.innerHTML = "0";
-		          // cell.contentEditable="true";
-		          cell.className = "clsSgst";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(14);
-		          cell.innerHTML = "0";
-		          cell.className = "clsSgstAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(15);
-		          cell.innerHTML = "0";
-		          cell.className = "clsNetAmt";
-		          cell.style.display="none";
-
-		          var cell = row.insertCell(16);
-		          cell.innerHTML = "";
-		          cell.className = "clsRemarks";
-		          cell.contentEditable="true";
-
-		          var cell = row.insertCell(17);
-		          cell.innerHTML = "<button class='row-add' style='color:lightgray;' onclick='addRow();'> <span class='glyphicon glyphicon-plus'> </span></button>";
-		          cell.style.textAlign="center";
-
-		          var cell = row.insertCell(18);
-		          cell.innerHTML = "<button class='row-remove' style='color:lightgray;'> <span class='glyphicon glyphicon-remove'> </span></button>";
-		          cell.style.textAlign="center";
-		          // cell.textAlign="center";
-		          if(sn == 2) ///remove row not required in first row
-			      {
-			      	cell.innerHTML = "";
-			      }
-
-			      var cell = row.insertCell(19);
-		          cell.innerHTML = "";//<button class='row-pp' style='color:lightgray;'> S </button>";
-		          cell.style.textAlign="center";
-		          cell.className = "row-pp";
-
-		          var cell = row.insertCell(20);
-		          cell.innerHTML = "<button class='row-log' style='color:red;'> <span class=''> Log </span></button>";
-		          cell.style.textAlign="center";
-
-
-			      $(".row-add").off();
-			      $(".row-add").on('mouseover focus', function(){
-			      	$(this).css("color", "green");
-			      });
-			      $(".row-add").on('mouseout blur', function(){
-			      	$(this).css("color", "lightgrey");
-			      });
-
-			      $(".row-remove").off();
-			      $(".row-remove").on('mouseover focus', function(){
-			      	$(this).css("color", "red");
-			      });
-			      $(".row-remove").on('mouseout blur', function(){
-			      	$(this).css("color", "lightgrey");
-			      });
-
-			      $(".row-log").off();
-			      $('.row-log').on('click', showSaleLog);
-			      $('.row-log').click(function () {
-		   				$('#myModalSaleLog').modal('toggle');});
-
-			      $(".row-pp").off();
-			      $(".row-pp").on('mouseover focus', function(){
-			      	$(this).css("color", "blue");
-			      });
-			      $(".row-pp").on('mouseout blur', function(){
-			      	$(this).css("color", "lightgrey");
-			      });
-
-			      $(".clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst").off();
-			      $('.clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst').on('keyup', doRowTotal);
-
-			      $('.clsAmt').off();
-			      $('.clsAmt').on('click', getCurrentQtyOfThisItem);
-
-			      $('.row-remove').on('click', removeRow);
-			      $('.row-pp').on('click', callLastPurchasePrice);
-
-			      $("#tbl1").scrollLeft(0);
-			      $("#tbl1").scrollTop($("#tbl1").prop("scrollHeight"));
-			      $("#tbl1").find("tr:last").find('td').eq(2).focus();
-
-			    //   $( ".clsItem" ).unbind();
-			    //   $( ".clsItem" ).off();
-			      bindItem();
-
-			      	///////Following function to add select TD text on FOCUS
-				  	$("#tbl1 tr td").on("focus", function(){
-				  		// alert($(this).text());
-				  		 var range, selection;
-						  if (document.body.createTextRange) {
-						    range = document.body.createTextRange();
-						    range.moveToElementText(this);
-						    range.select();
-						  } else if (window.getSelection) {
-						    selection = window.getSelection();
-						    range = document.createRange();
-						    range.selectNodeContents(this);
-						    selection.removeAllRanges();
-						    selection.addRange(range);
-						  }
-				  	}); 
-
-				  	resetSerialNo();
-
+			cell.innerHTML = "";
 			}
 
-			function callLastPurchasePrice()
-			{
-				var rowIndex = $(this).parent().index();
-				var itemRowId = $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text();
-				alert(itemRowId);
-				// btnText = $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(18)").find("button").text();
-				// // if(btnText == "S")
-				// {
-				// 	$.ajax({
-				// 		'url': base_url + '/' + controller + '/getLastPurchasePrice',
-				// 		'type': 'POST',
-				// 		'dataType': 'json',
-				// 		'data': {'itemRowId': itemRowId},
-				// 		'success': function(data){
-				// 			if(data)
-				// 			{
-				// 				alert(JSON.stringify(data));
-				// 				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").find("button").text(data['lastPurchasePrice'] );
-				// 				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").css({'color':'lightgrey'})
-				// 			}
-				// 		},
-				// 	'error': function(jqXHR, exception)
-			    //       {
-			    //         $("#paraAjaxErrorMsg").html( jqXHR.responseText );
-			    //         $("#modalAjaxErrorMsg").modal('toggle');
-			    //       }
-				// 	});
-				// }
-				// // else
-				// // {
-				// // 	$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").find("button").text("S");
-				// // }
-				// // alert(itemRowId);
-			}
-			function removeRow()
-			{
-				var rowIndex = $(this).parent().parent().index();
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").remove();
-				resetSerialNo();
-				doAmtTotal();
-				calcBalNow();
-			}
+			var cell = row.insertCell(19);
+			cell.innerHTML = "";//<button class='row-pp' style='color:lightgray;'> S </button>";
+			cell.style.textAlign="center";
+			cell.className = "row-pp";
 
-			function resetSerialNo()
-			{
-				$("#tbl1 tr").each(function(i){
-					$(this).find("td:eq(0)").text(i);
-				});
-			}
+			var cell = row.insertCell(20);
+			cell.innerHTML = "<button class='row-log' style='color:red;'> <span class=''> Log </span></button>";
+			cell.style.textAlign="center";
 
-			function doAmtTotal()
-			{
-				var amtTotal=0;
-				var discountTotal=0;
-				var pretaxTotal=0;
-				var igstTotal=0;
-				var cgstTotal=0;
-				var sgstTotal=0;
-				var netTotal=0;
-				var ppTotal=0;
-				$("#tbl1").find("tr:gt(0)").each(function(i){
-					if( isNaN(parseFloat( $(this).find("td:eq(5)").text() )) == false )
-					{
-						amtTotal += parseFloat( $(this).find("td:eq(5)").text() );
-						discountTotal += parseFloat( $(this).find("td:eq(7)").text() );
-						pretaxTotal += parseFloat( $(this).find("td:eq(8)").text() );
-						igstTotal += parseFloat( $(this).find("td:eq(10)").text() );
-						cgstTotal += parseFloat( $(this).find("td:eq(12)").text() );
-						sgstTotal += parseFloat( $(this).find("td:eq(14)").text() );
-						netTotal += parseFloat( $(this).find("td:eq(15)").text() );
-						str = $(this).find("td:eq(19)").text();
-						// alert((str.isNull()));
-						if( str.substring(str.indexOf("K")+1, str.length) == "0" || str == "") /// agar pp nahi h ya zero h.
-						{
-							ppTotal += parseFloat( $(this).find("td:eq(5)").text() );
-						}
-						else
-						{
-							ppTotal += parseFloat( str.substring(str.indexOf("K")+1, str.length ) ) *  parseFloat( $(this).find("td:eq(3)").text() );
-						}
+
+			$(".row-add").off();
+			$(".row-add").on('mouseover focus', function(){
+			$(this).css("color", "green");
+			});
+			$(".row-add").on('mouseout blur', function(){
+			$(this).css("color", "lightgrey");
+			});
+
+			$(".row-remove").off();
+			$(".row-remove").on('mouseover focus', function(){
+			$(this).css("color", "red");
+			});
+			$(".row-remove").on('mouseout blur', function(){
+			$(this).css("color", "lightgrey");
+			});
+
+			$(".row-log").off();
+			$('.row-log').on('click', showSaleLog);
+			$('.row-log').click(function () {
+				$('#myModalSaleLog').modal('toggle');});
+
+			$(".row-pp").off();
+			$(".row-pp").on('mouseover focus', function(){
+			$(this).css("color", "blue");
+			});
+			$(".row-pp").on('mouseout blur', function(){
+			$(this).css("color", "lightgrey");
+			});
+
+			$(".clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst").off();
+			$('.clsQty, .clsRate, .clsDiscountPer, .clsIgst, .clsCgst, .clsSgst').on('keyup', doRowTotal);
+
+			$('.clsAmt').off();
+			$('.clsAmt').on('click', getCurrentQtyOfThisItem);
+
+			$('.row-remove').on('click', removeRow);
+			$('.row-pp').on('click', callLastPurchasePrice);
+
+			$("#tbl1").scrollLeft(0);
+			$("#tbl1").scrollTop($("#tbl1").prop("scrollHeight"));
+			$("#tbl1").find("tr:last").find('td').eq(2).focus();
+
+		//   $( ".clsItem" ).unbind();
+		//   $( ".clsItem" ).off();
+			bindItem();
+
+			///////Following function to add select TD text on FOCUS
+			$("#tbl1 tr td").on("focus", function(){
+				// alert($(this).text());
+					var range, selection;
+					if (document.body.createTextRange) {
+					range = document.body.createTextRange();
+					range.moveToElementText(this);
+					range.select();
+					} else if (window.getSelection) {
+					selection = window.getSelection();
+					range = document.createRange();
+					range.selectNodeContents(this);
+					selection.removeAllRanges();
+					selection.addRange(range);
 					}
-				});
-				$("#txtTotalAmt").val(amtTotal.toFixed(2));
-				$("#txtTotalDiscount").val(discountTotal.toFixed(2));
-				$("#txtPretaxAmt").val(pretaxTotal.toFixed(2));
-				$("#txtTotalIgst").val(igstTotal.toFixed(2));
-				$("#txtTotalCgst").val(cgstTotal.toFixed(2));
-				$("#txtTotalSgst").val(sgstTotal.toFixed(2));
-				$("#txtNetAmt").val( Math.round(netTotal).toFixed(2) );
-				// alert(netTotal);
-				var netInWords = number2text( parseFloat( $("#txtNetAmt").val() ) ) ;
-			  	$("#txtWords").val( netInWords );
-			  	var np = (Math.round(netTotal).toFixed(2) - Math.round(ppTotal).toFixed(2))
-			  	// alert(Math.round(ppTotal).toFixed(2));
-			  	var npp = ((np * 100)/Math.round(ppTotal)).toFixed(1);
-			  	$("#txtHappy").val( npp + "%XYTRP" + (Math.round(netTotal).toFixed(2) - Math.round(ppTotal).toFixed(2)) );
-			}
+			}); 
 
-			function calcBalNow()
+			resetSerialNo();
+
+	}
+
+	function callLastPurchasePrice()
+	{
+		var rowIndex = $(this).parent().index();
+		var itemRowId = $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text();
+		alert(itemRowId);
+		// btnText = $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(18)").find("button").text();
+		// // if(btnText == "S")
+		// {
+		// 	$.ajax({
+		// 		'url': base_url + '/' + controller + '/getLastPurchasePrice',
+		// 		'type': 'POST',
+		// 		'dataType': 'json',
+		// 		'data': {'itemRowId': itemRowId},
+		// 		'success': function(data){
+		// 			if(data)
+		// 			{
+		// 				alert(JSON.stringify(data));
+		// 				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").find("button").text(data['lastPurchasePrice'] );
+		// 				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").css({'color':'lightgrey'})
+		// 			}
+		// 		},
+		// 	'error': function(jqXHR, exception)
+		//       {
+		//         $("#paraAjaxErrorMsg").html( jqXHR.responseText );
+		//         $("#modalAjaxErrorMsg").modal('toggle');
+		//       }
+		// 	});
+		// }
+		// // else
+		// // {
+		// // 	$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").find("button").text("S");
+		// // }
+		// // alert(itemRowId);
+	}
+	function removeRow()
+	{
+		var rowIndex = $(this).parent().parent().index();
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").remove();
+		resetSerialNo();
+		doAmtTotal();
+		calcBalNow();
+	}
+
+	function resetSerialNo()
+	{
+		$("#tbl1 tr").each(function(i){
+			$(this).find("td:eq(0)").text(i);
+		});
+	}
+
+	function doAmtTotal()
+	{
+		var amtTotal=0;
+		var discountTotal=0;
+		var pretaxTotal=0;
+		var igstTotal=0;
+		var cgstTotal=0;
+		var sgstTotal=0;
+		var netTotal=0;
+		var ppTotal=0;
+		$("#tbl1").find("tr:gt(0)").each(function(i){
+			if( isNaN(parseFloat( $(this).find("td:eq(5)").text() )) == false )
 			{
-				if( $("#txtAmtPaid").val() !== "" )
+				amtTotal += parseFloat( $(this).find("td:eq(5)").text() );
+				discountTotal += parseFloat( $(this).find("td:eq(7)").text() );
+				pretaxTotal += parseFloat( $(this).find("td:eq(8)").text() );
+				igstTotal += parseFloat( $(this).find("td:eq(10)").text() );
+				cgstTotal += parseFloat( $(this).find("td:eq(12)").text() );
+				sgstTotal += parseFloat( $(this).find("td:eq(14)").text() );
+				netTotal += parseFloat( $(this).find("td:eq(15)").text() );
+				str = $(this).find("td:eq(19)").text();
+				// alert((str.isNull()));
+				if( str.substring(str.indexOf("K")+1, str.length) == "0" || str == "") /// agar pp nahi h ya zero h.
 				{
-					$("#txtBalance").val( (parseFloat($("#txtNetAmt").val()) - parseFloat($("#txtAmtPaid").val())).toFixed(2) );
+					ppTotal += parseFloat( $(this).find("td:eq(5)").text() );
 				}
 				else
 				{
-					$("#txtBalance").val( parseFloat($("#txtNetAmt").val()) - 0 );
+					ppTotal += parseFloat( str.substring(str.indexOf("K")+1, str.length ) ) *  parseFloat( $(this).find("td:eq(3)").text() );
 				}
 			}
+		});
+		$("#txtTotalAmt").val(amtTotal.toFixed(2));
+		$("#txtTotalDiscount").val(discountTotal.toFixed(2));
+		$("#txtPretaxAmt").val(pretaxTotal.toFixed(2));
+		$("#txtTotalIgst").val(igstTotal.toFixed(2));
+		$("#txtTotalCgst").val(cgstTotal.toFixed(2));
+		$("#txtTotalSgst").val(sgstTotal.toFixed(2));
+		$("#txtNetAmt").val( Math.round(netTotal).toFixed(2) );
+		// alert(netTotal);
+		var netInWords = number2text( parseFloat( $("#txtNetAmt").val() ) ) ;
+		$("#txtWords").val( netInWords );
+		var np = (Math.round(netTotal).toFixed(2) - Math.round(ppTotal).toFixed(2))
+		// alert(Math.round(ppTotal).toFixed(2));
+		var npp = ((np * 100)/Math.round(ppTotal)).toFixed(1);
+		$("#txtHappy").val( npp + "%XYTRP" + (Math.round(netTotal).toFixed(2) - Math.round(ppTotal).toFixed(2)) );
+	}
 
-			function doRowTotal()
+	function calcBalNow()
+	{
+		if( $("#txtAmtPaid").val() !== "" )
+		{
+			$("#txtBalance").val( (parseFloat($("#txtNetAmt").val()) - parseFloat($("#txtAmtPaid").val())).toFixed(2) );
+		}
+		else
+		{
+			$("#txtBalance").val( parseFloat($("#txtNetAmt").val()) - 0 );
+		}
+	}
+
+	function doRowTotal()
+	{
+		// alert();
+		var rowIndex = $(this).parent().index();
+		var qty = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(3)").text() );				
+		if( isNaN(qty) ) 
+		{
+			qty = 0;
+		}
+		var rate = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(4)").text() ); 
+		if( isNaN(rate) ) 
+		{
+			rate = 0;
+		}
+		var rowAmt = qty * rate;
+		rowAmt = rowAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(5)").text( rowAmt );
+
+		var dis = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(6)").text() );				
+		if( isNaN(dis) ) 
+		{
+			dis = 0;
+		}
+		var rowDiscountAmt = rowAmt * dis / 100;
+		rowDiscountAmt = rowDiscountAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(7)").text( rowDiscountAmt );
+
+		var rowPreTaxAmt = rowAmt - rowDiscountAmt;
+		rowPreTaxAmt = rowPreTaxAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(8)").text( rowPreTaxAmt );
+
+		var igst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(9)").text() );				
+		if( isNaN(igst) ) 
+		{
+			igst = 0;
+		}
+		// alert(igst);
+		var rowIgstAmt = rowPreTaxAmt * igst / 100;
+		rowIgstAmt = rowIgstAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(10)").text( rowIgstAmt );
+
+		var cgst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(11)").text() );				
+		if( isNaN(cgst) ) 
+		{
+			cgst = 0;
+		}
+		var rowCgstAmt = rowPreTaxAmt * cgst / 100;
+		rowCgstAmt = rowCgstAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(12)").text( rowCgstAmt );
+
+		var sgst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(13)").text() );				
+		if( isNaN(sgst) ) 
+		{
+			sgst = 0;
+		}
+		var rowSgstAmt = rowPreTaxAmt * sgst / 100;
+		rowSgstAmt = rowSgstAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(14)").text( rowSgstAmt );
+
+		var rowNetAmt = parseFloat(rowPreTaxAmt) + parseFloat(rowIgstAmt) + parseFloat(rowCgstAmt) + parseFloat(rowSgstAmt);
+		rowNetAmt = rowNetAmt.toFixed(2);
+		$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(15)").text( rowNetAmt );
+
+		doAmtTotal();
+		calcBalNow();
+	}
+
+	function getCurrentQtyOfThisItem()
+	{
+		// Find the closest row (parent <tr> element)
+		var row = $(this).closest("tr");
+		var rowIndex = $(this).parent().index();
+		var itemRowIdForCurrentQty = parseInt($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text() );	
+		if(itemRowIdForCurrentQty == "" || itemRowIdForCurrentQty == "-1" || isNaN(itemRowIdForCurrentQty) )
+		{
+			// alert("Invalid item...");
+			return;
+		}
+		$.ajax({
+			'url': base_url + '/' + controller + '/getCurrentQtyOfThisItem',
+			'type': 'POST', 
+			'data':{'itemRowId':itemRowIdForCurrentQty},
+			'dataType': 'json',
+			'success':function(data)
 			{
-				// alert();
-				var rowIndex = $(this).parent().index();
-				var qty = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(3)").text() );				
-				if( isNaN(qty) ) 
-				{
-					qty = 0;
+				// console.log(data['records']);
+				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(0)").text( data['records'][0].closingQty )
+				
+
+				// Find the button element within the row and change its text
+				row.find(".row-log").text( row.find(".row-log").text() + " ~ " + data['records'][0].closingQty );
+				// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(20)").child().text( data['records'][0].closingQty )
+
+			},
+			error: function (jqXHR, exception) {
+					ajaxCallErrorMsg(jqXHR, exception)
 				}
-				var rate = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(4)").text() ); 
-				if( isNaN(rate) ) 
-				{
-					rate = 0;
-				}
-				var rowAmt = qty * rate;
-				rowAmt = rowAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(5)").text( rowAmt );
+		});
+	}
 
-				var dis = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(6)").text() );				
-				if( isNaN(dis) ) 
-				{
-					dis = 0;
-				}
-				var rowDiscountAmt = rowAmt * dis / 100;
-				rowDiscountAmt = rowDiscountAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(7)").text( rowDiscountAmt );
+	function bindItem() 
+	{
+		var selected = false;
+		var defaultText = "";
 
-				var rowPreTaxAmt = rowAmt - rowDiscountAmt;
-				rowPreTaxAmt = rowPreTaxAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(8)").text( rowPreTaxAmt );
+		$(".clsItem").focus(function() {
+			selected = false;
+			defaultText = $(this).text();
+		});
 
-				var igst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(9)").text() );				
-				if( isNaN(igst) ) 
-				{
-					igst = 0;
-				}
-				// alert(igst);
-				var rowIgstAmt = rowPreTaxAmt * igst / 100;
-				rowIgstAmt = rowIgstAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(10)").text( rowIgstAmt );
+		jSonArray = globalJSonArrayOfItems;
+		
 
-				var cgst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(11)").text() );				
-				if( isNaN(cgst) ) 
-				{
-					cgst = 0;
-				}
-				var rowCgstAmt = rowPreTaxAmt * cgst / 100;
-				rowCgstAmt = rowCgstAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(12)").text( rowCgstAmt );
-
-				var sgst = parseFloat ($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(13)").text() );				
-				if( isNaN(sgst) ) 
-				{
-					sgst = 0;
-				}
-				var rowSgstAmt = rowPreTaxAmt * sgst / 100;
-				rowSgstAmt = rowSgstAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(14)").text( rowSgstAmt );
-
-				var rowNetAmt = parseFloat(rowPreTaxAmt) + parseFloat(rowIgstAmt) + parseFloat(rowCgstAmt) + parseFloat(rowSgstAmt);
-				rowNetAmt = rowNetAmt.toFixed(2);
-				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(15)").text( rowNetAmt );
-
-				doAmtTotal();
-				calcBalNow();
+		var availableTags = $.map(JSON.parse(jSonArray), function(obj) {
+			return {
+				label: obj.itemName + " ~ " + obj.hsn,
+				itemRowId: obj.itemRowId,
+				itemLastRate: obj.rate,
+				pp: obj.pp,
+				hsn: obj.hsn
 			}
+		});
 
-			function getCurrentQtyOfThisItem()
-			{
-				// Find the closest row (parent <tr> element)
-				var row = $(this).closest("tr");
-				var rowIndex = $(this).parent().index();
-				var itemRowIdForCurrentQty = parseInt($("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text() );	
-				if(itemRowIdForCurrentQty == "" || itemRowIdForCurrentQty == "-1" || isNaN(itemRowIdForCurrentQty) )
-				{
-					// alert("Invalid item...");
-					return;
-				}
-				$.ajax({
-					'url': base_url + '/' + controller + '/getCurrentQtyOfThisItem',
-					'type': 'POST', 
-					'data':{'itemRowId':itemRowIdForCurrentQty},
-					'dataType': 'json',
-					'success':function(data)
-					{
-						// console.log(data['records']);
-						// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(0)").text( data['records'][0].closingQty )
-						
-
-						// Find the button element within the row and change its text
-						row.find(".row-log").text( row.find(".row-log").text() + " ~ " + data['records'][0].closingQty );
-						// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(20)").child().text( data['records'][0].closingQty )
-
-					},
-					error: function (jqXHR, exception) {
-							ajaxCallErrorMsg(jqXHR, exception)
+		$(".clsItem").autocomplete({
+			source: function(request, response) {
+				var aryResponse = [];
+				var arySplitRequest = request.term.split(" ");
+				for (var i = 0; i < availableTags.length; i++) {
+					var intCount = 0;
+					for (var j = 0; j < arySplitRequest.length; j++) {
+						var cleanString = arySplitRequest[j].replace(/[|&;$%@"<>()+,]/g, "");
+						var regexp = new RegExp(cleanString, 'i');
+						var test = JSON.stringify(availableTags[i].label.toLowerCase()).match(regexp);
+						if (test) {
+							intCount++;
+						} else {
+							intCount = arySplitRequest.length + 1;
 						}
-				});
+						if (intCount == arySplitRequest.length) {
+							aryResponse.push(availableTags[i]);
+						}
+					}
+				}
+				response(aryResponse);
+			},
+			autoFocus: true,
+			selectFirst: true,
+			select: function(event, ui) {
+				selected = true;
+				var selectedTag = ui.item.label;
+				var selectedTagIndex = availableTags.findIndex(tag => tag.label === selectedTag);
+				if (selectedTagIndex === -1) {
+					alert("Please select from the available tags.");
+					selected = false;
+					return false; // prevent selection
+				}
+				var selectedObj = ui.item;
+				var itemRowId = ui.item.itemRowId;
+				var itemLastRate = ui.item.itemLastRate;
+				var pp = ui.item.pp;
+				pp = parseFloat(pp);
+				if (isNaN(pp)) {
+					pp = 0;
+				}
+				var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+				var rowIndex = $(this).parent().index();
+				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text(itemRowId);
+				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(4)").text(itemLastRate);
+				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").text(itemRowId + "K" + pp + possible.charAt(Math.floor(Math.random() * possible.length)));
+				$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").css("color", "lightgray");
+			},
+			change: function(event, ui) {
+				if (!selected) {
+					var value = $(this).val();
+					var isAvailable = availableTags.some(tag => tag.label === value);
+					if (!isAvailable) {
+						var rowIndex = $(this).parent().index();
+						$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text( '-1' );
+					}
+				}
 			}
-  
-			function bindItem()
-		  	{
-		  		var select = false;
-			  	var defaultText = "";
-			        // $( ".clsItem" ).off();
-			    $( ".clsItem" ).focus(function(){ 
-		  			select = false; 
-		  			defaultText = $(this).text();
-		  		});
+		});
+	}
 
 
 
-				// var someList = ["seven nine five", "five fifteen twenty", "twenty-five maybe one", "two (five) one"];
-				var jSonArray = '<?php echo json_encode($items); ?>';
-				var availableTags = $.map(JSON.parse(jSonArray), function(obj){
-							return{
-									label: obj.itemName + " ~ " + obj.hsn,
-									itemRowId: obj.itemRowId,
-									itemLastRate: obj.rate,
-									pp: obj.pp,
-									hsn: obj.hsn
-							}
-					});
 
-				    $(function() {
-						
-						// if ($( ".clsItem" ).data('autocomplete')) 
-						// {
-						// 	console.log("FF");
-						// 	$( ".clsItem" ).autocomplete("destroy");
-						// 	// $( ".clsItem" ).removeData('autocomplete');
-						// }
-						// $( ".clsItem" ).autocomplete( "destroy" );
-			        $( ".clsItem" ).autocomplete({
-			            source: function(request, response) {
-			                
-			                var aryResponse = [];
-			                var arySplitRequest = request.term.split(" ");
-			                // alert(JSON.stringify(arySplitRequest));
-			                for( i = 0; i < availableTags.length; i++ ) {
-			                    var intCount = 0;
-			                    for( j = 0; j < arySplitRequest.length; j++ ) {
-			                        var cleanString = arySplitRequest[j].replace(/[|&;$%@"<>()+,]/g, "");
-			                        regexp = new RegExp(cleanString, 'i');
-			                        var test = JSON.stringify(availableTags[i].label.toLowerCase()).match(regexp);
-
-			                        
-			                        if( test ) {
-			                            intCount++;
-			                        } else if( !test ) {
-			                        intCount = arySplitRequest.length + 1;
-			                        }
-			                        if ( intCount == arySplitRequest.length ) {
-			                            aryResponse.push( availableTags[i] );
-			                        }
-			                    };
-			                }
-			                response(aryResponse);
-			            },
-						autoFocus: true,
-			  			selectFirst: true,
-			            select: function (event, ui) {
-				      	select = true;
-				      	var selectedObj = ui.item; 
-					    var itemRowId = ui.item.itemRowId;
-					    var itemLastRate = ui.item.itemLastRate;
-					    var pp = ui.item.pp;
-					    pp = parseFloat(pp);
-					    if(isNaN(pp) == true )
-					    {
-					    	pp=0;
-					    }
-					    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-					    var rowIndex = $(this).parent().index();
-					    $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text( itemRowId );
-					    $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(4)").text( itemLastRate );
-					    $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").text( itemRowId + "K" + pp + possible.charAt(Math.floor(Math.random() * possible.length)));
-					    $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(19)").css("color", "lightgray");
-			        	}
-
-			        }).blur(function() {
-				    	var rowIndex = $(this).parent().index();
-					    var newText = $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(2)").text(); 
-					    // $("#txtAddress").val(defaultText + "  " + newText);
-						  if( !select && !(defaultText == newText)) 
-						  {
-							// console.log(rowIndex + " " + defaultText + " " + newText + " " + select)
-						  	$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(2)").css("color", "red");
-						  	$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text( '-1' );
-						  }
-						  else
-						  {
-							// console.log(rowIndex + " " + defaultText + " " + newText + " " + select)
-						  	$("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(2)").css("color", "black");
-						  	// $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text( $("#tbl1").find("tr:eq(" + rowIndex + ")").find("td:eq(1)").text() );
-						  }
-						  doRowTotal();
-						});	///////////
-
-			    });
-		  	}
-
-
-	
 
 	var select = false;
     $( "#txtCustomerName" ).focus(function(){ 
-	  			select = false; 
-	  			// $("#txtAddress").val(select);
-	  		});
+			select = false; 
+		});
 
 	$(document).ready( function () 
 	{
@@ -1578,14 +1579,8 @@
 					}
 		});
 
-		// var availableTags = ["Gold", "Silver", "Metal"];
-		// var select = false;
-		// alert(availableTags);
 	    $( "#txtCustomerName" ).autocomplete({
-		      // source: availableTags,
-
 		      source: function(request, response) {
-			                
 			                var aryResponse = [];
 			                var arySplitRequest = request.term.split(" ");
 			                // alert(JSON.stringify(arySplitRequest));
@@ -2340,5 +2335,31 @@
 				var cell = row.insertCell(13);
 				cell.innerHTML = recordsPurchaseLog[i].freight;
 			}
+	}
+
+
+
+	function reloadItems()
+	{
+		$.ajax({
+				'url': base_url + '/' + controller + '/reloadItems',
+				'type': 'POST',
+				'dataType': 'json',
+				'data': {'rowId': 'rowId'
+						},
+				'success': function(data){
+					if(data)
+					{
+						if( data )
+						{
+							globalJSonArrayOfItems = JSON.stringify(data['items']);
+							bindItem();
+						}
+					}
+				},
+				error: function (jqXHR, exception) {
+					ajaxCallErrorMsg(jqXHR, exception)
+				}
+			});
 	}
  </script>

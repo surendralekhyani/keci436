@@ -175,7 +175,7 @@ class Stocks_model extends Model
         $query = $builder->select('stocks.*')
                              ->where('investor', $request->getPost('investor'))
                              ->where('stockName', $request->getPost('stockName'))
-                             ->orderBy('dt, stockRowId')
+                             ->orderBy('dt desc, stockRowId desc')
                              ->get();
         return($query->getResultArray());
     }

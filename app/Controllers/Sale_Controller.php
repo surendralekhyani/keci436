@@ -139,11 +139,37 @@ class Sale_Controller extends BaseController
 		echo view('footer');
 	}  
 
+	
+	public function reloadItems()
+	{
+		$model = new Sale_model();
+		$data['items'] = $model->getItems();
+		echo json_encode($data);
+	}
+
 	public function insert()
 	{
 		if( trim($this->request->getPost('customerRowId')) == "" )
 		{
 			echo json_encode("Khali");
+			return;
+		}
+		/////Check if any item with -1 code
+		$invlidItem=0;
+        $TableData = $this->request->getPost('TableDataItems');
+        $TableData = stripcslashes($TableData);
+        $TableData = json_decode($TableData,TRUE);
+        $myTableRows = count($TableData);
+        for ($i=0; $i < $myTableRows; $i++) 
+        {
+			if( $TableData[$i]['itemRowId'] == "-1" || ($TableData[$i]['itemRowId']) == "")
+			{
+				$invlidItem = 1;
+			}
+		}
+		if( $invlidItem == 1 )
+		{
+			echo json_encode("ITEMGALAT");
 			return;
 		}
 		$model = new Sale_model();

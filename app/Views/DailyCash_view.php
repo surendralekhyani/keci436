@@ -959,7 +959,8 @@
 		globalInHandThisDay = x;
 		// console.log(inHand + "  " + x);
 		// $("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC: " + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-		$("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC, inHand, Udhar, Stocks: " + parseInt(x).toLocaleString('en-IN') );
+		// $("#lblTotalAmtWithShop").text( "Deepu, Suri, Equitas, ACC, inHand, Udhar, Stocks: " + parseInt(x).toLocaleString('en-IN') );
+		$("#lblTotalAmtWithShop").text( " " );
 
 		// udhari = parseInt($("#tblNet tr:eq(2)").find("td:eq(1)").text()) + parseInt($("#tblNet tr:eq(3)").find("td:eq(1)").text());
 		var suri = '<?php echo $deepuSuriBank['suri']; ?>';
@@ -971,14 +972,15 @@
 		var ps = '<?php echo $deepuSuriBank['plusSum']; ?>';
 		var ms = '<?php echo $deepuSuriBank['minusSum']; ?>';
 		// console.log();
-		$("#lblDetail").text( "Suri: " + parseInt(suri).toLocaleString('en-IN') + 
+		$("#lblDetail").html( "Suri: " + parseInt(suri).toLocaleString('en-IN') + 
 								", Deepu: " + parseInt(deepu).toLocaleString('en-IN') + 
 								", Eqitas: " + parseInt(equitas).toLocaleString('en-IN') + 
 								", ACC: " + parseInt(acc).toLocaleString('en-IN') + 
 								", Udhar: " + parseInt(ps).toLocaleString('en-IN') + 
 								"" + parseInt(ms).toLocaleString('en-IN') +
 								", Stocks: " + parseInt(stocksInvested).toLocaleString('en-IN') +
-								", In Hand: " + parseInt(inHand).toLocaleString('en-IN')
+								", In Hand: " + parseInt(inHand).toLocaleString('en-IN') +
+								" = TOTAL: <span style='color:red; font-size:14pt;'>" + parseInt(x).toLocaleString('en-IN') + "</span>"
 							);
 		// alert('');
 	}

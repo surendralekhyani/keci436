@@ -71,7 +71,8 @@ class Stocks_Controller extends BaseController
 	public function getStockLedger()
 	{
 		$model = new Stocks_model();
-		$data['records'] = $model->getStockLedger($this->request);
+		// $data['records'] = $model->getStockLedger($this->request);
+		$data['records'] = $model->loadAllOfThisStock($this->request);
 		echo json_encode($data);
 	}
 	public function loadAllOfThisStock()

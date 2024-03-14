@@ -111,6 +111,7 @@ $routes->post('/Sale_Controller/getQuotationProducts', 'Sale_Controller::getQuot
 $routes->post('/Sale_Controller/getSaleDetial', 'Sale_Controller::getSaleDetial', ['filter' => 'auth']);
 $routes->post('/Sale_Controller/getSaleLog', 'Sale_Controller::getSaleLog', ['filter' => 'auth']);
 $routes->post('/Sale_Controller/getCurrentQtyOfThisItem', 'Sale_Controller::getCurrentQtyOfThisItem', ['filter' => 'auth']);
+$routes->post('/Sale_Controller/reloadItems', 'Sale_Controller::reloadItems', ['filter' => 'auth']);
 
 
 $routes->add('/paymentreceipt', 'PaymentReceipt_Controller::index', ['filter' => 'auth']);

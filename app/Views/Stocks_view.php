@@ -61,14 +61,22 @@
 			  cell.innerHTML = records[i].rate;
 			  cell.style.textAlign = "right";
 	          var cell = row.insertCell(7);
+			  cell.innerHTML = (records[i].qty * records[i].rate).toFixed(2);
+			  cell.style.textAlign = "right";
+	          var cell = row.insertCell(8);
 	          cell.innerHTML = records[i].charges;
 			  cell.style.textAlign = "right";
 			  cell.classList.add("clsCharges");
-			  var cell = row.insertCell(8);
+			  var cell = row.insertCell(9);
 			  cell.style.display = "none";
-	          var cell = row.insertCell(9);
+	          var cell = row.insertCell(10);
 	          cell.innerHTML = records[i].buySell;
 			  cell.style.textAlign = "center";
+			  if(records[i].buySell == "B")
+			  {
+				cell.style.background = "#FF0000";
+				cell.style.color = "#FFFFFF";
+			  }
 	  	  }
 		//   $(".clsCharges").on('click', setChargesEditable);
 		//   $(".clsBtnSaveCharges").on('click', saveCharges);
@@ -194,7 +202,7 @@
 			row = table.insertRow(newRowIndex);
 
           	var cell = row.insertCell(0);
-          	cell.innerHTML = records[i].dt.split("-").reverse().join("-");
+          	cell.innerHTML = "<input type='checkbox' id='chk' class='chk' name='chk' style='width:20px;height:20px;vertical-align: middle;'/> " + records[i].dt.split("-").reverse().join("-");
 			cell.contentEditable = true;
           	var cell = row.insertCell(1);
 			if(records[i].buySell == "B")
@@ -236,15 +244,33 @@
 			var cell = row.insertCell(9);
 			cell.innerHTML = "<button class='clsBtnSaveEditedStock btn btn-primary form-control'>Save</button>";
         }
+		$(".chk").on('click', doTotalOfCheckedStocks);
 		$(".clsBtnSaveEditedStock").on('click', saveEditedStock);
-		$("#lblNetProfitOrLoss").text(tot.toFixed(2));
+		$("#lblNetProfitOrLoss").text("Total of Sattled: " + tot.toFixed(2));
+	}
+
+	function doTotalOfCheckedStocks()
+	{
+		let total=0;
+		$('#tblStockLedger tr:gt(0)').each(function(row, tr)
+	    {
+			if($(tr).find('td:eq(0)').find('input[type=checkbox]').is(':checked'))
+			{
+				amt = $(tr).find('td:eq(5)').text();
+				total += parseFloat(amt);
+			}
+	    }); 
+		
+		$("#lblTotalOfCheckedStocks").text("Total of Checked: " + total.toFixed(2));
 	}
 
 	function saveEditedStock()
 	{
 		rowIndex = $(this).parent().parent().index();
 		stockRowId = $(this).closest('tr').children('td:eq(8)').text();
-		dt = $(this).closest('tr').children('td:eq(0)').text().split("-").reverse().join("-");
+		dt = $(this).closest('tr').children('td:eq(0)').text().trim().split("-").reverse().join("-");
+		console.log(dt);
+
 		// Regular expression to match the yyyy-mm-dd format
 		// var regex = /^\d{4}-\d{2}-\d{2}$/;
 		var regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])$/;
@@ -544,6 +570,7 @@
 							<th style='display:none1;'>Stock</th>
 							<th style='display:none1; text-align:right;'>Qty</th>
 							<th style='display:none1; text-align:right;'>Rate</th>
+							<th style='display:none1; text-align:right;'>Amt</th>
 							<th style='display:none1; text-align:right;'>Charges</th>
 							<th style='display:none; text-align:right;'></th>
 							<th style='display:none1;'>B / S</th>
@@ -574,7 +601,7 @@
 		        </div>
 		        <div class="modal-body" style="overflow: auto; height: 500px;">
 		          <table id='tblStockLedger' class="table table-stripped">
-		          		<th style=''>[Date]</th>
+		          		<th>[Date]</th>
 					 	<th style='text-align:right;'>Qty</th>
 					 	<th style='text-align:right;'>Rate</th>
 					 	<th style='text-align:right;'>Value</th>
@@ -588,10 +615,10 @@
 		        </div>
 		        <div class="modal-footer">
 		        	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-		        		<button type="button" class="btn btn-block btn-primary" onclick="loadAllOfThisStock();">Load All (This Stock)</button>
+						<label id="lblTotalOfCheckedStocks" style="color:blue;"></label>
+		        		<!-- <button type="button" class="btn btn-block btn-primary" onclick="loadAllOfThisStock();">Load All (This Stock)</button> -->
 		        	</div>
 		        	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-		        		
 		        	</div>
 		        	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 						<label id="lblNetProfitOrLoss" style="color:red;"></label>
