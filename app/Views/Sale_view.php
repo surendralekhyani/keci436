@@ -1472,16 +1472,12 @@
 	function bindItem() 
 	{
 		var selected = false;
-		var defaultText = "";
-
 		$(".clsItem").focus(function() {
 			selected = false;
-			defaultText = $(this).text();
 		});
 
 		jSonArray = globalJSonArrayOfItems;
 		
-
 		var availableTags = $.map(JSON.parse(jSonArray), function(obj) {
 			return {
 				label: obj.itemName + " ~ " + obj.hsn,
